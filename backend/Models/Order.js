@@ -1,12 +1,18 @@
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 
 const orderSchema = new mongoose.Schema({
   items: [
     {
-      item: { type: String, required: true },
-      qty: { type: Number, required: true },
-      size: { type: String, required: true },
+      slug: { type: String, required: true },
+      name: { type: String, required: true },
+      quantity: { type: Number, required: true },
+      size: { type: String },
       price: { type: Number, required: true },
+      product: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Product',
+        required: true,
+      },
     },
   ],
   status: {
@@ -18,19 +24,7 @@ const orderSchema = new mongoose.Schema({
   fulfilled: { type: Boolean, default: false },
   received: { type: Date },
   trackingNumber: { type: String },
-  orderId: { type: String, required: true, unique: true },
-  customer: {
-    name: { type: String, required: true },
-    email: { type: String, required: true },
-  },
   shippingAddress: {
-    street: { type: String, required: true },
-    street2: { type: String },
-    city: { type: String, required: true },
-    state: { type: String, required: true },
-    zip: { type: String, required: true },
-  },
-  billingAddress: {
     street: { type: String, required: true },
     street2: { type: String },
     city: { type: String, required: true },
@@ -43,7 +37,15 @@ const orderSchema = new mongoose.Schema({
     enum: ['Pending', 'Paid', 'Failed'],
     default: 'Pending',
   },
+  itemsPrice: { type: Number, required: true },
+  shippingPrice: { type: Number, required: true },
+  taxPrice: { type: Number, required: true },
+  totalPrice: { type: Number, required: true },
+  user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
   paymentDate: { type: Date },
+  processedDate: { type: Date },
+  shippingDate: { type: Date },
+  DeliveryDate: { type: Date },
   nft: { type: mongoose.Schema.Types.ObjectId, ref: 'NFT' },
   createdAt: { type: Date, default: Date.now },
   updatedAt: { type: Date, default: Date.now },
